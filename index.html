@@ -3,23 +3,252 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maya tools</title>
+<title>Marek — Maya tools</title>
+<meta name="description" content="Maya tools made by an animator, for animators. LivePlay: see your heavy shot play in real time, with sound, moments after you change a key.">
 <style>
-  :root { --bg:#161616; --text:#e8e4dc; --muted:#8c877e; --accent:#f08a24; }
-  html,body { margin:0; height:100%; background:var(--bg); color:var(--text);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { min-height:100%; display:flex; flex-direction:column; justify-content:center;
-    align-items:center; text-align:center; padding:0 16px; box-sizing:border-box; }
-  h1 { font-weight:600; font-size:clamp(28px,6vw,44px); margin:0 0 12px; letter-spacing:-0.01em; }
-  p { color:var(--muted); margin:0; font-size:17px; }
-  .dot { display:inline-block; width:10px; height:10px; border-radius:50%;
-    background:var(--accent); margin-right:10px; vertical-align:middle; }
+  :root {
+    --bg: #141414;
+    --panel: #1c1c1c;
+    --panel-2: #222;
+    --line: #2e2e2e;
+    --text: #ece8e0;
+    --muted: #9a958c;
+    --dim: #6f6b64;
+    --accent: #f08a24;
+    --accent-soft: rgba(240,138,36,0.12);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px; line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  /* Header */
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { font-weight: 650; letter-spacing: -0.01em; color: var(--text); }
+  .brand .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); margin-right: 10px; vertical-align: 1px; }
+  nav a { color: var(--muted); margin-left: 22px; font-size: 15px; }
+  nav a:hover { color: var(--text); text-decoration: none; }
+
+  /* Hero */
+  .hero { padding: 72px 0 40px; }
+  .eyebrow { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+  .badge.beta { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(240,138,36,0.35); }
+  .badge.soon { background: #232323; color: var(--muted); border: 1px solid var(--line); }
+  h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.05; margin: 14px 0 18px; letter-spacing: -0.02em; font-weight: 700; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 20px; color: var(--muted); max-width: 640px; margin: 0 0 28px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-block; padding: 12px 20px; border-radius: 10px; font-weight: 600; font-size: 16px; border: 1px solid var(--line); color: var(--text); background: var(--panel); }
+  .btn:hover { text-decoration: none; border-color: #444; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #1a1208; }
+  .btn.disabled { background: #2a2a2a; border-color: #333; color: var(--dim); cursor: default; }
+  .note { color: var(--dim); font-size: 14px; }
+
+  /* Video placeholder */
+  .video {
+    margin: 44px 0 0; aspect-ratio: 16 / 9; border-radius: var(--radius);
+    background: repeating-linear-gradient(135deg, #191919 0 14px, #1d1d1d 14px 28px);
+    border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+    color: var(--dim); font-size: 15px; text-align: center; padding: 16px;
+  }
+  .video .play { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--dim); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .video .play::after { content: ""; border-left: 18px solid var(--dim); border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 5px; }
+
+  /* Sections */
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h3 { font-size: 18px; margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 28px; max-width: 680px; }
+
+  .problem { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .card p { margin: 0; color: var(--muted); }
+  .card.now { border-color: rgba(240,138,36,0.4); }
+  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-bottom: 8px; display: block; }
+  .card.now .label { color: var(--accent); }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .features .card p { font-size: 15.5px; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; max-width: 680px; }
+  .steps li { counter-increment: step; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 16px 58px; position: relative; }
+  .steps li::before { content: counter(step); position: absolute; left: 18px; top: 15px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  code { background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 0.92em; }
+
+  .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .specs dl { margin: 0; }
+  .specs dt { color: var(--dim); font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .specs dd { margin: 2px 0 14px; }
+
+  .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .tool-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+  .about { max-width: 680px; }
+  .about p { color: var(--muted); }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+  @media (max-width: 760px) {
+    nav a:not(:last-child) { display: none; }
+    .problem, .features, .specs, .tools { grid-template-columns: 1fr; }
+    .hero { padding-top: 48px; }
+  }
 </style>
 </head>
 <body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#"><span class="dot"></span>Marek — Maya tools</a>
+    <nav>
+      <a href="#liveplay">LivePlay</a>
+      <a href="#more">More tools</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-  <h1><span class="dot"></span>Maya tools</h1>
-  <p>Made by an animator, for animators. Coming soon.</p>
+  <div class="wrap hero" id="liveplay">
+    <div class="eyebrow"><span class="badge beta">Beta</span> Free · For Maya 2024 and later</div>
+    <h1>Change a key.<br>See it play <em>in real time.</em></h1>
+    <p class="lede">LivePlay keeps a playblast of your shot up to date while you animate, and plays it at full speed with sound. Even on heavy rigs.</p>
+    <div class="cta">
+      <span class="btn disabled" aria-disabled="true">Download: coming soon</span>
+      <a class="btn" href="#how">How it works</a>
+    </div>
+    <div class="video" role="img" aria-label="Demo video coming soon">
+      <div><div class="play"></div>Demo video coming soon</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>The problem</h2>
+      <p class="sub">Heavy rigs don't play in real time in Maya, so checking your timing means playblasting again and again.</p>
+      <div class="problem">
+        <div class="card">
+          <span class="label">Without it</span>
+          <p>Change a key, playblast, wait, watch, change another key, playblast again. Every check costs a minute, so you check less often than you should.</p>
+        </div>
+        <div class="card now">
+          <span class="label">With LivePlay</span>
+          <p>Change a key and keep working. A moment later the player shows the new timing at full speed, with sound. You never leave the scene.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <p class="sub">A hidden second Maya follows your edits and re-renders only the frames they change, starting with the frame you're on.</p>
+      <div class="features">
+        <div class="card">
+          <h3>Only what changed</h3>
+          <p>Edit a key and only the affected frames are redrawn, so the update arrives in a fraction of a second, not a full playblast later.</p>
+        </div>
+        <div class="card">
+          <h3>Full speed, with sound</h3>
+          <p>The player runs your shot at real speed with its audio, while you keep animating in Maya.</p>
+        </div>
+        <div class="card">
+          <h3>Your hotkeys</h3>
+          <p>Step frames, step keys, play and scrub with the Maya hotkeys you already use. It stays in sync with the time slider.</p>
+        </div>
+        <div class="card">
+          <h3>Draw over it</h3>
+          <p>Pen and eraser with tablet pressure, layers, onion skin and hold. Export your drawings to Maya's Blue Pencil.</p>
+        </div>
+        <div class="card">
+          <h3>Paper mode</h3>
+          <p>Fade the picture back so your drawings read clearly, then step through them like a flip.</p>
+        </div>
+        <div class="card">
+          <h3>Safe by design</h3>
+          <p>It never saves over your scene, and it tells you clearly when something needs your attention.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2>Install</h2>
+      <p class="sub">No restarts, no setup files to edit.</p>
+      <ol class="steps">
+        <li>Download and unzip LivePlay.</li>
+        <li>Drag <code>install_bgcache.py</code> into the Maya viewport and click <strong>Install</strong>.</li>
+        <li>Click the new shelf button. Updates install the same way, without restarting Maya.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Details</h2>
+      <p class="sub">The full user guide, changelog and bug reports will live on GitHub with the release.</p>
+      <div class="specs">
+        <div class="card">
+          <dl>
+            <dt>Maya</dt><dd>2024 and later</dd>
+            <dt>Systems</dt><dd>Windows, macOS (incl. Apple Silicon), Linux</dd>
+            <dt>Tested on</dt><dd>Maya 2027 on Windows · Maya 2024 on Linux · Maya 2025 on macOS</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl>
+            <dt>Status</dt><dd>Final beta. First public release coming soon.</dd>
+            <dt>Price</dt><dd>Free, open source (MIT licence)</dd>
+            <dt>Bugs and ideas</dt><dd>GitHub Issues, once released</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="more">
+    <div class="wrap">
+      <h2>More tools on the way</h2>
+      <p class="sub">Built and used in daily animation work. They'll be released as they're ready.</p>
+      <div class="tools">
+        <div class="card">
+          <div class="tool-head"><h3>Shot Transfer</h3><span class="badge soon">Coming soon</span></div>
+          <p>Copy animation and constraints from another shot's file into yours, one frame or the whole range, without opening that file in your scene. Thousands of curves in seconds, and one Undo puts everything back.</p>
+        </div>
+        <div class="card">
+          <div class="tool-head"><h3>Ref</h3><span class="badge soon">Coming soon</span></div>
+          <p>Bring your video reference into the shot. It listens to your reference clips, finds the takes that match your shot's dialogue, and puts them on image planes lined up with the sound.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap about">
+      <h2>About</h2>
+      <p>I'm Marek, a feature and TV animator who also teaches animation. I use Maya every day, and I build these tools to get the slow parts of the job out of the way of the acting.</p>
+      <p>They're made by an animator, for animators, and they're free.</p>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Marek</span>
+    <span>Maya is a trademark of Autodesk, Inc. These tools are not affiliated with Autodesk.</span>
+  </div>
+</footer>
+
 </body>
 </html>
